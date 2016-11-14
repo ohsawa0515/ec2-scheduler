@@ -15,6 +15,7 @@
 import boto3
 import datetime
 import json
+import re
 from urllib2 import Request
 from collections import Counter
 
@@ -157,6 +158,13 @@ def lambda_handler(event, context):
                             for d in daysActive:
                                 if d.lower() == nowDay:
                                     isActiveDay = True
+
+                        # Slice 24 hours
+                        if re.match(r"^23[0-9]{2}$", nowMax) and \
+                                re.match(r"^00[0-9]{2}$", now) and \
+                                re.match(r"^00[0-9]{2}$", startTime):
+                            startTime = "24" + startTime[2:]
+                            now = "24" + now[2:]
 
                         # Append to start list
                         if startTime >= str(nowMax) and startTime <= str(now) and \
